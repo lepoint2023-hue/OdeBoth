@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#00407a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Ode · Assistant Sainte-Ode</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<!-- ═══ STYLES ═══ -->
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#0056A4;--blue-dark:#00407a;--blue-mid:#1a6bbf;
+  --blue-light:#e6f0fb;--blue-pale:#f0f6fd;
+  --gold:#e8a020;--gold-light:#f5c860;
+  --white:#fff;--ink:#0d1e30;--gray:#eef2f7;
+  --gray-mid:#8da4be;--gray-bd:#cdd9e8;--green:#1aab72;
+  --r:16px;
+  --sh-sm:0 2px 12px rgba(0,64,122,.10);
+  --sh-lg:0 14px 60px rgba(0,64,122,.22);
+}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--blue-dark);
+  display:flex;flex-direction:column;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 15% 80%,rgba(0,86,164,.5) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 50% at 85% 10%,rgba(232,160,32,.12) 0%,transparent 55%);
+}
+
+/* HEADER */
+.page-header{display:flex;align-items:center;gap:12px;padding:12px 16px 0;flex-shrink:0}
+.commune-logo{width:44px;height:44px;border-radius:10px;background:var(--white);padding:3px;box-shadow:0 2px 8px rgba(0,0,0,.15);overflow:hidden;flex-shrink:0}
+.commune-logo img{width:100%;height:100%;object-fit:contain}
+.commune-info h1{font-family:'Sora',sans-serif;font-size:17px;font-weight:600;color:var(--white);line-height:1.2}
+.commune-info p{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px}
+.status-badge{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:11px;color:#6fcf97;background:rgba(111,207,151,.12);padding:4px 10px;border-radius:20px;border:1px solid rgba(111,207,151,.25);white-space:nowrap}
+.status-dot{width:6px;height:6px;border-radius:50%;background:#6fcf97;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* LANG */
+.lang-row{display:flex;gap:6px;padding:7px 16px 0;flex-shrink:0;flex-wrap:wrap}
+.lang-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.65);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;padding:5px 10px;border-radius:14px;cursor:pointer;transition:all .15s;min-height:30px}
+.lang-btn.active,.lang-btn:hover{background:rgba(255,255,255,.25);color:#fff;border-color:rgba(255,255,255,.5)}
+
+/* CHAT SHELL */
+.chat-wrap{flex:1;display:flex;flex-direction:column;margin:8px 12px 10px;border-radius:var(--r);overflow:hidden;box-shadow:var(--sh-lg);min-height:0}
+
+/* TOP BAR */
+.chat-topbar{background:var(--blue);padding:10px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.bot-avatar{width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+.bot-avatar img{width:24px;height:24px;object-fit:contain}
+.bot-name{font-family:'Sora',sans-serif;font-size:13px;font-weight:500;color:#fff;line-height:1.2}
+.bot-sub{font-size:10px;color:rgba(255,255,255,.5);margin-top:1px}
+.svc-pill{margin-left:auto;font-size:10px;font-weight:500;padding:3px 8px;border-radius:10px;background:rgba(255,255,255,.15);color:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.25);display:none;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.svc-pill.on{display:block}
+.reset-btn{background:none;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.5);font-family:'DM Sans',sans-serif;font-size:11px;padding:4px 9px;border-radius:20px;cursor:pointer;transition:all .15s;flex-shrink:0;white-space:nowrap}
+.reset-btn:hover{color:#fff;border-color:rgba(255,255,255,.6)}
+
+/* MESSAGES */
+.msgs{flex:1;overflow-y:auto;overflow-x:hidden;padding:12px;display:flex;flex-direction:column;gap:11px;background:var(--blue-pale);-webkit-overflow-scrolling:touch;scroll-behavior:smooth;min-height:0}
+.msgs::-webkit-scrollbar{width:3px}
+.msgs::-webkit-scrollbar-thumb{background:var(--gray-bd);border-radius:2px}
+.msg-row{display:flex;gap:7px;align-items:flex-end;opacity:0;transform:translateY(6px);animation:fadeUp .25s ease forwards}
+.msg-row.user{flex-direction:row-reverse}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+.av{width:26px;height:26px;border-radius:7px;background:var(--blue);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+.av img{width:18px;height:18px;object-fit:contain}
+.av svg{width:13px;height:13px;fill:#fff}
+.av.u{background:var(--gray)}
+.av.u svg{fill:var(--blue)}
+.bbl{max-width:80%;padding:9px 13px;border-radius:13px;font-size:14px;line-height:1.65;color:var(--ink);word-break:break-word}
+.bbl.bot{background:var(--white);border:1px solid var(--gray-bd);border-bottom-left-radius:3px;box-shadow:var(--sh-sm)}
+.bbl.user{background:var(--blue);color:#fff;border-bottom-right-radius:3px}
+.bbl strong{font-weight:500;color:var(--blue)}
+.bbl.user strong{color:var(--gold-light)}
+.bbl a{color:var(--blue);text-decoration:underline;word-break:break-all}
+.bbl.user a{color:var(--gold-light)}
+.bbl ul{padding-left:15px;margin-top:5px}
+.bbl li{margin-bottom:3px}
+.bbl.rtl{direction:rtl;text-align:right;font-family:sans-serif}
+
+/* SERVICE SELECTOR */
+.svc-selector{background:var(--white);border:1px solid var(--gray-bd);border-radius:13px;padding:12px;box-shadow:var(--sh-sm);opacity:0;animation:fadeUp .3s ease forwards}
+.svc-selector-title{font-size:11px;color:var(--gray-mid);margin-bottom:9px;font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+.svc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+@media(min-width:520px){.svc-grid{grid-template-columns:repeat(3,1fr)}}
+.svc-btn{display:flex;align-items:center;gap:7px;padding:9px 10px;background:var(--blue-pale);border:1.5px solid transparent;border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--ink);text-align:left;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.svc-btn:active,.svc-btn:hover{border-color:var(--blue);background:var(--blue-light);color:var(--blue-dark)}
+.svc-icon{font-size:16px;flex-shrink:0;line-height:1}
+
+/* QUICK REPLIES */
+.qr-wrap{display:flex;flex-wrap:nowrap;gap:6px;margin-top:7px;overflow-x:auto;padding-bottom:2px;-webkit-overflow-scrolling:touch}
+.qr-wrap::-webkit-scrollbar{display:none}
+.qr-btn{background:var(--white);border:1.5px solid var(--blue);color:var(--blue);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;padding:6px 12px;border-radius:20px;cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+.qr-btn:active,.qr-btn:hover{background:var(--blue);color:#fff}
+
+/* TYPING */
+.typing-row{display:flex;gap:7px;align-items:flex-end;opacity:0;animation:fadeUp .25s ease forwards}
+.typing-bbl{background:var(--white);border:1px solid var(--gray-bd);border-radius:13px;border-bottom-left-radius:3px;padding:11px 14px;display:flex;gap:4px;align-items:center;box-shadow:var(--sh-sm)}
+.t-dot{width:6px;height:6px;border-radius:50%;background:var(--blue-mid);animation:bounce 1.2s infinite}
+.t-dot:nth-child(2){animation-delay:.2s}
+.t-dot:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-4px)}}
+
+/* INPUT */
+.input-bar{padding:10px 12px;background:var(--white);border-top:1px solid var(--gray-bd);display:flex;gap:8px;align-items:flex-end;flex-shrink:0;padding-bottom:max(10px,env(safe-area-inset-bottom))}
+#chat-input{flex:1;border:1.5px solid var(--gray-bd);border-radius:22px;padding:9px 14px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--ink);outline:none;transition:border-color .2s;background:var(--blue-pale);resize:none;max-height:80px;overflow-y:auto;line-height:1.4}
+#chat-input:focus{border-color:var(--blue);background:#fff}
+#chat-input::placeholder{color:var(--gray-mid)}
+.send-btn{width:42px;height:42px;border-radius:12px;background:var(--blue);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+.send-btn:hover{background:var(--blue-mid)}
+.send-btn:active{transform:scale(.95)}
+.send-btn:disabled{background:var(--gray);cursor:not-allowed;transform:none}
+.send-btn svg{width:16px;height:16px;fill:#fff}
+
+/* FOOTER */
+.page-footer{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;padding:7px 16px 10px;flex-shrink:0}
+.foot-chip{display:flex;align-items:center;gap:5px;font-size:11px;color:rgba(255,255,255,.3)}
+.foot-chip svg{width:11px;height:11px;fill:currentColor;flex-shrink:0}
+.foot-chip a{color:rgba(255,255,255,.45);text-decoration:underline}
+.ts{font-size:11px;color:var(--gray-mid);text-align:center;padding:2px 0}
+
+/* MOBILE */
+@media(max-width:480px){
+  .page-header{padding:9px 12px 0}
+  .commune-info h1{font-size:15px}
+  .commune-logo{width:38px;height:38px}
+  .lang-row{padding:6px 12px 0}
+  .chat-wrap{margin:7px 8px 8px;border-radius:14px}
+  .bot-sub{display:none}
+  .bbl{font-size:13px}
+  .page-footer{padding:5px 12px 8px;gap:10px}
+}
+@media(max-height:620px){
+  .page-header{display:none}
+  .lang-row{padding-top:6px}
+}
+@media(min-width:860px){
+  body{padding:0 20px}
+  .page-header,.lang-row{max-width:800px;margin-left:auto;margin-right:auto;width:100%}
+  .chat-wrap{max-width:800px;margin-left:auto;margin-right:auto}
+  .page-footer{padding-bottom:14px}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="page-header">
+  <div class="commune-logo" id="header-logo"></div>
+  <div class="commune-info">
+    <h1>Sainte-Ode</h1>
+    <p id="header-sub">Service Population &middot; Assistant IA &middot; 24h/24</p>
+  </div>
+  <div class="status-badge">
+    <div class="status-dot"></div>
+    <span id="status-label">En ligne</span>
+  </div>
+</div>
+
+<!-- LANGUES -->
+<div class="lang-row">
+  <button class="lang-btn active" onclick="setLang('fr')">&#127463;&#127466; FR</button>
+  <button class="lang-btn" onclick="setLang('nl')">&#127463;&#127466; NL</button>
+  <button class="lang-btn" onclick="setLang('en')">&#127468;&#127463; EN</button>
+  <button class="lang-btn" onclick="setLang('ar')">&#127480;&#127462; &#1593;&#1585;</button>
+  <button class="lang-btn" onclick="setLang('de')">&#127465;&#127466; DE</button>
+</div>
+
+<!-- CHAT -->
+<div class="chat-wrap">
+  <div class="chat-topbar">
+    <div class="bot-avatar" id="topbar-logo"></div>
+    <div>
+      <div class="bot-name" id="bot-name-label">Ode &middot; Assistante Communale</div>
+      <div class="bot-sub">Commune de Sainte-Ode &middot; Province de Luxembourg</div>
+    </div>
+    <span class="svc-pill" id="svc-pill"></span>
+    <button class="reset-btn" id="reset-btn" onclick="resetChat()">&#8634; Recommencer</button>
+  </div>
+  <div class="msgs" id="messages">
+    <div class="ts" id="ts-label">Aujourd'hui</div>
+  </div>
+  <div class="input-bar">
+    <textarea id="chat-input" placeholder="Posez votre question..." rows="1"></textarea>
+    <button class="send-btn" id="send-btn" onclick="sendMessage()">
+      <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="page-footer">
+  <div class="foot-chip">
+    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z"/></svg>
+    Propuls&eacute; par Gemini IA
+  </div>
+  <div class="foot-chip">
+    <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+    <a href="tel:+3261210440">+32 61 21 04 40</a>
+  </div>
+  <div class="foot-chip">
+    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+    <a href="mailto:info@sainte-ode.be">info@sainte-ode.be</a>
+  </div>
+</div>
+
+<!-- ═══ SCRIPTS ═══ -->
+<script src="module4-prompt.js"></script>
+<script src="module6-api.js"></script>
+<script>
+
+/* ═══ BLASON ═══ */
+const BLASON = 'blason-sainte-ode.jpg';
+(function(){
+  document.getElementById('header-logo').innerHTML = '<img src="blason-sainte-ode.jpg" alt="Blason Sainte-Ode">';
+  document.getElementById('topbar-logo').innerHTML = '<img src="blason-sainte-ode.jpg" alt="Ode" style="width:24px;height:24px;object-fit:contain">';
+})();
+
+/* ═══ LANGUES ═══ */
+let lang = 'fr';
+const S = {
+  fr:{sub:'Population · IA · 24h/24',status:'En ligne',botName:'Ode · Assistante Communale',reset:'↺ Recommencer',ts:"Aujourd'hui",ph:'Posez votre question…',svctitle:'Quel service cherchez-vous ?',
+    welcome:'Bonjour 👋 Je suis **Ode**, votre assistante communale de **Sainte-Ode**.\n\nChoisissez un service ou tapez directement votre question — je vous oriente vers le bon contact ou document.'},
+  nl:{sub:'Bevolking · AI · 24u/24',status:'Online',botName:'Ode · Gemeentelijke Assistent',reset:'↺ Opnieuw',ts:'Vandaag',ph:'Stel uw vraag…',svctitle:'Welke dienst zoekt u?',
+    welcome:'Goedag 👋 Ik ben **Ode**, uw gemeentelijke assistent voor **Sainte-Ode**.\n\nKies een dienst of typ uw vraag — ik wijs u de juiste richting.'},
+  en:{sub:'Population · AI · 24/7',status:'Online',botName:'Ode · Municipal Assistant',reset:'↺ Start over',ts:'Today',ph:'Ask your question…',svctitle:'Which service are you looking for?',
+    welcome:'Hello 👋 I am **Ode**, your municipal assistant for **Sainte-Ode**.\n\nChoose a service or type your question — I will point you to the right contact or document.'},
+  ar:{sub:'الخدمة البلدية · ذكاء اصطناعي · 24/7',status:'متصل',botName:'أود · المساعد البلدي',reset:'↺ بدء من جديد',ts:'اليوم',ph:'اطرح سؤالك…',svctitle:'ما الخدمة التي تحتاجها؟',
+    welcome:'مرحباً 👋 أنا **أود**، مساعدتك البلدية لبلدية **سانت-أود**.\n\nاختر خدمة أو اكتب سؤالك — سأوجهك نحو الاتصال أو الوثيقة المناسبة.'},
+  de:{sub:'Bevölkerung · KI · 24h/24',status:'Online',botName:'Ode · Gemeindeassistentin',reset:'↺ Neu starten',ts:'Heute',ph:'Stellen Sie Ihre Frage…',svctitle:'Welchen Dienst suchen Sie?',
+    welcome:'Hallo 👋 Ich bin **Ode**, Ihre Gemeindeassistentin der Gemeinde **Sainte-Ode**.\n\nWählen Sie einen Dienst oder stellen Sie direkt Ihre Frage — ich leite Sie zum richtigen Ansprechpartner weiter.'}
+};
+
+const SVCS = {
+  fr:[
+    {id:'population',icon:'🪪',label:'Population & État civil'},
+    {id:'urbanisme',icon:'🏗️',label:'Urbanisme & Travaux'},
+    {id:'finances',icon:'💶',label:'Finances & Taxes'},
+    {id:'env',icon:'🌿',label:'Environnement & Déchets'},
+    {id:'social',icon:'🤝',label:'CPAS & Social'},
+    {id:'enfance',icon:'👶',label:'Enfance & Enseignement'},
+    {id:'salles',icon:'🏛️',label:'Location de salles'},
+    {id:'cimetiere',icon:'🕊️',label:'Cimetières'},
+    {id:'events',icon:'🎪',label:'Événements'},
+    {id:'epn',icon:'💻',label:'Aide numérique (EPN)'},
+    {id:'rh',icon:'💼',label:'Emploi & Stages'},
+    {id:'autre',icon:'💬',label:'Autre question'},
+  ],
+  nl:[
+    {id:'population',icon:'🪪',label:'Bevolking & Burgerlijke Stand'},
+    {id:'urbanisme',icon:'🏗️',label:'Stedenbouw & Werken'},
+    {id:'finances',icon:'💶',label:'Financiën & Belastingen'},
+    {id:'env',icon:'🌿',label:'Milieu & Afval'},
+    {id:'social',icon:'🤝',label:'OCMW & Sociale Diensten'},
+    {id:'enfance',icon:'👶',label:'Kinderopvang & Onderwijs'},
+    {id:'salles',icon:'🏛️',label:'Zaalverhuur'},
+    {id:'cimetiere',icon:'🕊️',label:'Begraafplaatsen'},
+    {id:'events',icon:'🎪',label:'Evenementen'},
+    {id:'epn',icon:'💻',label:'Digitale hulp (EPN)'},
+    {id:'rh',icon:'💼',label:'Werk & Stages'},
+    {id:'autre',icon:'💬',label:'Andere vraag'},
+  ],
+  en:[
+    {id:'population',icon:'🪪',label:'Population & Civil Status'},
+    {id:'urbanisme',icon:'🏗️',label:'Urban Planning & Works'},
+    {id:'finances',icon:'💶',label:'Finance & Taxes'},
+    {id:'env',icon:'🌿',label:'Environment & Waste'},
+    {id:'social',icon:'🤝',label:'CPAS & Social Services'},
+    {id:'enfance',icon:'👶',label:'Childcare & Education'},
+    {id:'salles',icon:'🏛️',label:'Hall Rental'},
+    {id:'cimetiere',icon:'🕊️',label:'Cemeteries'},
+    {id:'events',icon:'🎪',label:'Events'},
+    {id:'epn',icon:'💻',label:'Digital help (EPN)'},
+    {id:'rh',icon:'💼',label:'Jobs & Internships'},
+    {id:'autre',icon:'💬',label:'Other question'},
+  ],
+  ar:[
+    {id:'population',icon:'🪪',label:'السكان والحالة المدنية'},
+    {id:'urbanisme',icon:'🏗️',label:'التعمير والأشغال'},
+    {id:'finances',icon:'💶',label:'المالية والضرائب'},
+    {id:'env',icon:'🌿',label:'البيئة والنفايات'},
+    {id:'social',icon:'🤝',label:'الخدمات الاجتماعية'},
+    {id:'enfance',icon:'👶',label:'رعاية الأطفال والتعليم'},
+    {id:'salles',icon:'🏛️',label:'استئجار القاعات'},
+    {id:'cimetiere',icon:'🕊️',label:'المقابر'},
+    {id:'events',icon:'🎪',label:'الفعاليات'},
+    {id:'epn',icon:'💻',label:'المساعدة الرقمية'},
+    {id:'rh',icon:'💼',label:'العمل والتدريب'},
+    {id:'autre',icon:'💬',label:'سؤال آخر'},
+  ],
+  de:[
+    {id:'population',icon:'🪪',label:'Bevölkerung & Standesamt'},
+    {id:'urbanisme',icon:'🏗️',label:'Stadtplanung & Bauwesen'},
+    {id:'finances',icon:'💶',label:'Finanzen & Steuern'},
+    {id:'env',icon:'🌿',label:'Umwelt & Abfall'},
+    {id:'social',icon:'🤝',label:'ÖSHZ & Soziales'},
+    {id:'enfance',icon:'👶',label:'Kinderbetreuung & Schule'},
+    {id:'salles',icon:'🏛️',label:'Saalmietung'},
+    {id:'cimetiere',icon:'🕊️',label:'Friedhöfe'},
+    {id:'events',icon:'🎪',label:'Veranstaltungen'},
+    {id:'epn',icon:'💻',label:'Digitale Hilfe (EPN)'},
+    {id:'rh',icon:'💼',label:'Stellen & Praktika'},
+    {id:'autre',icon:'💬',label:'Andere Frage'},
+  ]
+};
+
+const QR = {
+  fr:{
+    population:['🪪 Carte identité — tarif','🛂 Passeport — tarif','📬 Déménagement','📄 Attestation résidence'],
+    urbanisme:['📐 Coût permis','🔎 Terrain constructible ?','🚧 Étapes permis','🏠 Contrôle implantation'],
+    finances:['🏠 Précompte immobilier','🏡 Taxe 2e résidence','🗑️ Taxe déchets','📞 Contact finances'],
+    env:['🗑️ Collecte poubelles','🛍️ Sacs PMC — prix','♻️ Dépôt sauvage','🐀 Nuisibles / rats'],
+    social:['🚖 Taxi social','🍽️ Repas à domicile','⚡ Aide énergie','⚖️ Permanence juridique'],
+    enfance:['🍼 Tarifs crèche','🎮 ATL — tarifs','🏕️ Plaines de vacances','🏫 Écoles communales'],
+    salles:['🏛️ Tarifs salles','📅 Disponibilités','💳 Réserver en ligne','🏟️ Salle Tonny'],
+    cimetiere:['⚰️ Tarif inhumation','🪦 Concession','🌸 Columbarium','🕊️ Exhumation'],
+    events:['🎪 Organiser événement','📋 Autorisation fête','🪑 Tables & chaises','📢 Annoncer sur le site'],
+    epn:['💻 Aide ordinateur','📱 Aide smartphone','📝 Formulaire en ligne','🖨️ Imprimer / scanner'],
+    rh:['💼 Offres d emploi','🎓 Stage','👩‍🎓 Job étudiant','📧 Candidature spontanée'],
+    autre:['📞 Horaires commune','📧 Envoyer un email','🔌 Borne recharge VE','🖨️ Tarif photocopie'],
+  },
+  nl:{
+    population:['🪪 Tarief ID-kaart','🛂 Tarief paspoort','📬 Verhuis','📄 Bewijs van verblijf'],
+    urbanisme:['📐 Kosten vergunning','🔎 Bouwgrond?','🚧 Procedure stap-voor-stap','🏠 Controlemeting'],
+    finances:['🏠 Onroerende voorheffing','🏡 Belasting 2e verblijf','🗑️ Afvalbelasting','📞 Contact financiën'],
+    env:['🗑️ Ophaaldag afval','🛍️ PMC-zakken','♻️ Sluikstort','🐀 Ongedierte'],
+    social:['🚖 Sociale taxi','🍽️ Maaltijden thuis','⚡ Energiesteun','⚖️ Juridisch advies'],
+    enfance:['🍼 Tarieven crèche','🎮 BSO tarieven','🏕️ Vakantiekampen','🏫 Scholen'],
+    salles:['🏛️ Zaaltarieven','📅 Beschikbaarheid','💳 Online reserveren','🏟️ Zaal Tonny'],
+    cimetiere:['⚰️ Begrafeniskosten','🪦 Grafconcessie','🌸 Columbarium','🕊️ Opgraving'],
+    events:['🎪 Evenement organiseren','📋 Vergunning feest','🪑 Tafels & stoelen','📢 Aankondigen'],
+    epn:['💻 Hulp computer','📱 Hulp smartphone','📝 Online formulier','🖨️ Afdrukken / scannen'],
+    rh:['💼 Vacatures','🎓 Stage','👩‍🎓 Studentenjob','📧 Open sollicitatie'],
+    autre:['📞 Openingsuren','📧 E-mail sturen','🔌 EV-laadpaal','🖨️ Fotokopie tarief'],
+  },
+  en:{
+    population:['🪪 ID card fee','🛂 Passport fee','📬 Moving address','📄 Residence certificate'],
+    urbanisme:['📐 Permit cost','🔎 Buildable land?','🚧 Permit procedure','🏠 Building inspection'],
+    finances:['🏠 Property tax','🏡 Second home tax','🗑️ Waste tax','📞 Finance contact'],
+    env:['🗑️ Bin collection day','🛍️ PMC bags','♻️ Illegal dumping','🐀 Pests / rats'],
+    social:['🚖 Social taxi','🍽️ Meals at home','⚡ Energy support','⚖️ Legal advice'],
+    enfance:['🍼 Nursery fees','🎮 After-school fees','🏕️ Holiday camps','🏫 Schools'],
+    salles:['🏛️ Hall rates','📅 Availability','💳 Book online','🏟️ Tonny hall'],
+    cimetiere:['⚰️ Burial fee','🪦 Concession','🌸 Columbarium','🕊️ Exhumation'],
+    events:['🎪 Organise event','📋 Event permit','🪑 Tables & chairs','📢 Announce on website'],
+    epn:['💻 Computer help','📱 Smartphone help','📝 Online form','🖨️ Print / scan'],
+    rh:['💼 Job offers','🎓 Internship','👩‍🎓 Student job','📧 Spontaneous application'],
+    autre:['📞 Opening hours','📧 Send email','🔌 EV charging','🖨️ Photocopy price'],
+  },
+  ar:{
+    population:['🪪 رسوم بطاقة الهوية','🛂 رسوم جواز السفر','📬 تغيير العنوان','📄 شهادة الإقامة'],
+    urbanisme:['📐 تكلفة التصريح','🔎 أرض للبناء؟','🚧 خطوات التصريح','🏠 مراقبة الموقع'],
+    finances:['🏠 الضريبة العقارية','🏡 ضريبة الإقامة الثانية','🗑️ ضريبة النفايات','📞 اتصال المالية'],
+    env:['🗑️ يوم جمع القمامة','🛍️ أكياس PMC','♻️ رمي مخالف','🐀 آفات'],
+    social:['🚖 سيارة أجرة اجتماعية','🍽️ وجبات منزلية','⚡ دعم الطاقة','⚖️ استشارة قانونية'],
+    enfance:['🍼 رسوم الحضانة','🎮 الرعاية بعد المدرسة','🏕️ مخيمات العطلات','🏫 المدارس'],
+    salles:['🏛️ أسعار القاعات','📅 التوفر','💳 الحجز عبر الإنترنت','🏟️ قاعة توني'],
+    cimetiere:['⚰️ رسوم الدفن','🪦 عقد الدفن','🌸 كولومباريوم','🕊️ نبش الرفات'],
+    events:['🎪 تنظيم فعالية','📋 إذن احتفال','🪑 طاولات وكراسي','📢 إعلان الفعالية'],
+    epn:['💻 مساعدة حاسوب','📱 مساعدة هاتف','📝 نموذج إلكتروني','🖨️ طباعة / مسح'],
+    rh:['💼 فرص العمل','🎓 تدريب','👩‍🎓 وظيفة طالب','📧 طلب عفوي'],
+    autre:['📞 ساعات العمل','📧 إرسال بريد','🔌 شحن السيارات','🖨️ سعر التصوير'],
+  },
+  de:{
+    population:['🪪 Personalausweis — Gebühr','🛂 Reisepass — Gebühr','📬 Ummeldung','📄 Wohnsitzbescheinigung'],
+    urbanisme:['📐 Baugenehmigung — Kosten','🔎 Bauland?','🚧 Genehmigungsverfahren','🏠 Lageprüfung'],
+    finances:['🏠 Grundsteuer','🏡 Zweitwohnsitzsteuer','🗑️ Abfallsteuer','📞 Finanzkontakt'],
+    env:['🗑️ Abholungstag','🛍️ PMC-Säcke','♻️ Illegale Ablagerung','🐀 Schädlinge'],
+    social:['🚖 Sozialtaxi','🍽️ Essen auf Rädern','⚡ Energiehilfe','⚖️ Rechtsberatung'],
+    enfance:['🍼 Krippengebühren','🎮 Hortgebühren','🏕️ Ferienlager','🏫 Gemeindeschulen'],
+    salles:['🏛️ Saalpreise','📅 Verfügbarkeit','💳 Online reservieren','🏟️ Saal Tonny'],
+    cimetiere:['⚰️ Bestattungsgebühr','🪦 Konzession','🌸 Kolumbarium','🕊️ Exhumierung'],
+    events:['🎪 Veranstaltung organisieren','📋 Genehmigung Fest','🪑 Tische & Stühle','📢 Ankündigung'],
+    epn:['💻 Computerhilfe','📱 Smartphonehilfe','📝 Online-Formular','🖨️ Drucken / Scannen'],
+    rh:['💼 Stellenangebote','🎓 Praktikum','👩‍🎓 Studentenjob','📧 Initiativbewerbung'],
+    autre:['📞 Öffnungszeiten','📧 E-Mail senden','🔌 E-Auto laden','🖨️ Kopierpreis'],
+  }
+};
+
+function getSvcs(l){ return SVCS[l||lang] || SVCS.fr; }
+function getQR(){ return (QR[lang]||QR.fr)[selectedSvc] || []; }
+
+/* ═══ STATE ═══ */
+let selectedSvc = null;
+
+/* ═══ LANGUE ═══ */
+function setLang(l){
+  lang = l;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.lang-btn[onclick="setLang(\''+l+'\')"]').classList.add('active');
+  document.getElementById('chat-input').dir = l === 'ar' ? 'rtl' : 'ltr';
+  document.documentElement.lang = l;
+  resetChat();
+}
+
+/* ═══ FORMATAGE TEXTE ═══ */
+function fmt(t){
+  return t
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g,'<em>$1</em>')
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>')
+    .replace(/(?<![">])(https?:\/\/[^\s<"]+)/g,u=>'<a href="'+u+'" target="_blank" rel="noopener">'+u+'</a>')
+    .replace(/^[-•] (.+)$/gm,'<li>$1</li>')
+    .replace(/(<li>[\s\S]+?<\/li>)/g,'<ul>$1</ul>')
+    .replace(/<\/ul>\s*<ul>/g,'')
+    .replace(/\n\n/g,'<br><br>')
+    .replace(/\n(?!<)/g,'<br>');
+}
+
+/* ═══ AFFICHAGE MESSAGES ═══ */
+function addMsg(role, text, qrs){
+  qrs = qrs || [];
+  const area = document.getElementById('messages');
+  const isAr = lang === 'ar';
+  const row = document.createElement('div');
+  row.className = 'msg-row' + (role === 'user' ? ' user' : '');
+  const avHtml = role === 'user'
+    ? '<div class="av u"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>'
+    : '<div class="av"><img src="blason-sainte-ode.jpg" alt="Ode"></div>';
+  const qrHtml = qrs.length
+    ? '<div class="qr-wrap">' + qrs.map(q => '<button class="qr-btn" onclick="sendMsg(\''+q.replace(/'/g,"\\'")+'\')">' + q + '</button>').join('') + '</div>'
+    : '';
+  const bblClass = 'bbl ' + (role === 'user' ? 'user' : 'bot') + (isAr ? ' rtl' : '');
+  row.innerHTML = avHtml + '<div><div class="'+bblClass+'">'+fmt(text)+'</div>'+qrHtml+'</div>';
+  area.appendChild(row);
+  area.scrollTop = area.scrollHeight;
+}
+
+function showSvcSelector(){
+  const area = document.getElementById('messages');
+  const w = document.createElement('div');
+  w.id = 'svc-sel-widget';
+  const s = S[lang] || S.fr;
+  w.innerHTML = '<div class="svc-selector" style="animation-delay:.15s"><div class="svc-selector-title">'+s.svctitle+'</div><div class="svc-grid">'
+    + getSvcs(lang).map(sv => '<button class="svc-btn" onclick="pickSvc(\''+sv.id+'\',\''+sv.label.replace(/'/g,"\\'")+'\')">'
+      + '<span class="svc-icon">'+sv.icon+'</span><span>'+sv.label+'</span></button>').join('')
+    + '</div></div>';
+  area.appendChild(w);
+  area.scrollTop = area.scrollHeight;
+}
+
+function pickSvc(id, label){
+  selectedSvc = id;
+  document.getElementById('svc-sel-widget') && document.getElementById('svc-sel-widget').remove();
+  const svc = getSvcs(lang).find(s => s.id === id);
+  const pill = document.getElementById('svc-pill');
+  pill.textContent = (svc ? svc.icon : '') + ' ' + label;
+  pill.classList.add('on');
+  addMsg('user', (svc ? svc.icon : '') + ' ' + label);
+  const svcMsg = {
+    fr: 'Je souhaite des informations sur le service : ',
+    nl: 'Ik wil informatie over de dienst: ',
+    en: 'I would like information about the service: ',
+    ar: 'أريد معلومات عن الخدمة: ',
+    de: 'Ich möchte Informationen über den Dienst: '
+  };
+  callGemini((svcMsg[lang]||svcMsg.fr) + label);
+}
+
+function showTyping(){
+  const area = document.getElementById('messages');
+  const row = document.createElement('div');
+  row.className = 'typing-row'; row.id = 'typing';
+  row.innerHTML = '<div class="av"><img src="blason-sainte-ode.jpg" alt="" style="width:18px;height:18px;object-fit:contain"></div>'
+    + '<div class="typing-bbl"><div class="t-dot"></div><div class="t-dot"></div><div class="t-dot"></div></div>';
+  area.appendChild(row);
+  area.scrollTop = area.scrollHeight;
+}
+function hideTyping(){ var t = document.getElementById('typing'); if(t) t.remove(); }
+
+/* ═══ INPUT ═══ */
+document.getElementById('chat-input').addEventListener('input', function(){
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 80) + 'px';
+});
+document.getElementById('chat-input').addEventListener('keydown', function(e){
+  if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendMsg(); }
+});
+
+/* ═══ INIT ═══ */
+window.addEventListener('load', function(){
+  resetChat();
+});
+
+</script>
+</body>
+</html>
