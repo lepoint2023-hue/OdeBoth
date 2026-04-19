@@ -47,8 +47,8 @@ async function callGemini(userMessage) {
       body: JSON.stringify({
         /* Instructions permanentes pour le bot */
         system_instruction: {
-          parts: [{ text: buildPrompt(selectedSvc, lang) }]
-        },
+  parts: [{ text: buildPrompt(selectedSvc, window.lang) }]
+},
         /* Historique de la conversation */
         contents: history,
         /* Paramètres de génération */
