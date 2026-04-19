@@ -63,7 +63,11 @@ parts: [{ text: buildPrompt(window.selectedSvc, window.lang) }]
     /* Extraire la réponse du bot */
     const reply =
       data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "Désolé, je n'ai pas pu traiter votre demande. Contactez-nous au **+32 61 21 04 40**.";
+      ({fr:"Désolé, je n'ai pas pu traiter votre demande. Contactez-nous au **+32 61 21 04 40**.",
+nl:"Sorry, uw verzoek kon niet worden verwerkt. Bel ons op **+32 61 21 04 40**.",
+en:"Sorry, your request could not be processed. Contact us at **+32 61 21 04 40**.",
+de:"Entschuldigung, Ihre Anfrage konnte nicht bearbeitet werden. Rufen Sie uns an: **+32 61 21 04 40**.",
+ar:"عذراً، لم نتمكن من معالجة طلبك. اتصل بنا على **+32 61 21 04 40**."})[window.lang||'fr'];
  
     /* Ajouter la réponse à l'historique */
     history.push({
