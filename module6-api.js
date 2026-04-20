@@ -88,7 +88,6 @@ nl:"⚠️ Verbinding niet beschikbaar. Bel **+32 61 21 04 40** of via [het burg
 en:"⚠️ Connection unavailable. Contact us at **+32 61 21 04 40** or via [citizen portal](https://sainteode.guichet-citoyen.be/).",
 de:"⚠️ Verbindung nicht verfügbar. Rufen Sie uns an: **+32 61 21 04 40** oder [Bürgerportal](https://sainteode.guichet-citoyen.be/).",
 ar:"⚠️ الاتصال غير متاح. اتصل بنا على **+32 61 21 04 40** أو عبر [بوابة المواطن](https://sainteode.guichet-citoyen.be/)."})[window.lang||'fr'];
-    );
   }
  
   loading = false;
