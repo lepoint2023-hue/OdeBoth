@@ -585,7 +585,7 @@ function addMsg(role, text, qrs){
   const jonqHtml = role !== 'user' ? '<img src="'+BLASON_DEC+'" alt="" style="width:22px;height:22px;object-fit:contain;margin-top:5px;display:block;opacity:0.85">' : '';
   const fbId = role !== 'user' ? 'fb-'+Date.now() : '';
   const fbHtml = fbId ? '<div id="'+fbId+'"></div>' : '';
-  row.innerHTML = avHtml + '<div><div class="'+bbl bot">' + fmt(text) + jonqHtml + '</div>' + qrHtml+fbHtml+'</div>';
+  row.innerHTML = avHtml + '<div><div class="'+bblClass">' + fmt(text) + jonqHtml + '</div>' + qrHtml+fbHtml+'</div>';
   area.appendChild(row);
   if (fbId) {
     const fbEl = document.getElementById(fbId);
