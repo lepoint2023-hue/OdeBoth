@@ -13,7 +13,7 @@
 
    ═══════════════════════════════════════════════════════════ */
 
-const API_KEY = "AIzaSyAI6cxKiJRGsWGalDMQJHlBp2JovnVI7PA";
+const API_KEY = "AIzaSyD_2Hk1ANuvwmterR5h9Xd8-xdMdpDAzyw";
 
 const API_URL =
   "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" +
