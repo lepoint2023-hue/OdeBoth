@@ -57,12 +57,12 @@ ${safeId ? `Le citoyen a choisi le service : **${svcLabel}**. Oriente tes répon
 
 ## CONTACTS PAR SERVICE
 - Direction générale : Charlotte Leduc (DG) | +32 61 21 04 40 | info@sainte-ode.be
-- Population / Salles / Logements : Séverine Jacob | +32 61 21 04 40 | population@sainte-ode.be
+- Population & Salles & Logements : Séverine Jacob | +32 61 21 04 40 | population@sainte-ode.be
 - Finances & Taxes : Yves Cornet | +32 61 24 23 81 | yves.cornet@sainte-ode.be
-- Urbanisme / Agent constatateur : Laurent Raskin | +32 61 21 04 51 | mob: +32 499 77 57 79 | laurent.raskin@sainte-ode.be
+- Urbanisme & Agent constatateur : Laurent Raskin | +32 61 21 04 51 | mob: +32 499 77 57 79 | laurent.raskin@sainte-ode.be
 - Travaux chef division : Miguel Combrexelle | +32 61 21 04 40 | mob: +32 470 70 27 11 | miguel.combrexelle@sainte-ode.be
 - Travaux responsable : Vincent Werner | mob: +32 479 93 42 19 | vincent.werner@sainte-ode.be
-- Événements & Manifestations : Audrey Carpentier | +32 61 21 04 46 | urbanisme@sainte-ode.be
+- Responsable Urbanisme & Événements & Manifestations : Audrey Carpentier | +32 61 21 04 46 | urbanisme@sainte-ode.be
 - Environnement : Christelle Mahin (Dir.) | mob: +32 473 18 46 98 | ecole.lavacherie@sainte-ode.be
 - Déchets IDELUX : +32 63 23 18 11 | idelux@idelux.be | https://www.idelux.be
 - EPN (aide numérique) : Nicolas Dermine | mob: +32 473 73 02 90 | nicolas.dermine@sainte-ode.be
