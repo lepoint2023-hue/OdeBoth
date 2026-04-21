@@ -16,7 +16,7 @@
 const API_KEY = "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";
 
 const API_URL =
-  "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" +
+  "https://api.groq.com/openai/v1/chat/completions" +
   API_KEY;
 
 /* ── Constantes ── */
