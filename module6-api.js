@@ -19,11 +19,11 @@
    Prévoir un backend proxy pour la production.
    ═══════════════════════════════════════════════════════════ */
 
-const GROQ_KEY   = "VOTRE_CLE_GROQ_ICI";   // gsk_...
-const GEMINI_KEY = "VOTRE_CLE_GEMINI_ICI"; // AIza...
-
+const GROQ_KEY   = "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";   // gsk_...
+const GEMINI_KEY = "AIzaSyAAmbvU5jPFiB8ugsPuvYoqBxvMU76UFLw"; // AIza...
+ 
 const GROQ_URL   = "https://api.groq.com/openai/v1/chat/completions";
-const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=";
+const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="
 
 /* ── Constantes ── */
 const HISTORY_MAX   = 20;
