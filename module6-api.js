@@ -3,11 +3,6 @@
    Commune de Sainte-Ode · v5.0
    ═══════════════════════════════════════════════════════════
 
-   Remplacez les clés ci-dessous :
-   - GROQ_KEY  : commence par gsk_...   (https://console.groq.com)
-   - GEMINI_KEY: commence par AIza...   (https://aistudio.google.com/app/apikey)
-
-   Fonctionnement :
    1. Groq est appelé en priorité (rapide, gratuit)
    2. Si Groq est saturé (429) → bascule sur Gemini
    3. Si Gemini est saturé (429) → réessaie Groq
@@ -15,8 +10,6 @@
    5. Chaque nuit à 1h00, reset automatique vers Groq
       (les quotas gratuits se rechargent à minuit)
 
-   ⚠️  Ces clés sont visibles côté navigateur.
-   Prévoir un backend proxy pour la production.
    ═══════════════════════════════════════════════════════════ */
 
 const GROQ_KEY   = "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";   // gsk_...
