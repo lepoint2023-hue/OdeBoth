@@ -1,11 +1,6 @@
 /* ═══════════════════════════════════════════════════════════
    MODULE 6 — APPEL VIA PROXY CLOUDFLARE
    Commune de Sainte-Ode · v7.0
-   ═══════════════════════════════════════════════════════════
-   Les clés API sont sécurisées dans Cloudflare Workers.
-   Aucune clé n'est visible côté navigateur.
-   Fallback automatique : Groq → Gemini → Groq (cyclique)
-   Reset nocturne à 1h00 (quotas rechargés à minuit)
    ═══════════════════════════════════════════════════════════ */
 
 const PROXY_URL = "https://ode-proxy.michelmimichelmichel.workers.dev";
