@@ -1,12 +1,6 @@
 /* ═══════════════════════════════════════════════════════════
    MODULE 6 — APPEL VIA PROXY CLOUDFLARE
    Commune de Sainte-Ode · v6.0
-   ═══════════════════════════════════════════════════════════
-
-   Les clés API sont sécurisées dans Cloudflare Workers.
-   Aucune clé n'est visible côté navigateur.
-
-   URL du proxy : https://ode-proxy.michelmimichelmichel.workers.dev
    ═══════════════════════════════════════════════════════════ */
 
 const PROXY_URL = "https://ode-proxy.michelmimichelmichel.workers.dev";
