@@ -6,8 +6,6 @@
 
 'use strict';
 
-/* Dépendance : getSvcs() est défini dans index.html
-   Paramètre `locale` (et non `lang`) pour ne pas masquer la variable globale */
 function buildPrompt(svcId, locale) {
 
   /* Validation du svcId — 'college' ajouté pour le nouveau bouton */
